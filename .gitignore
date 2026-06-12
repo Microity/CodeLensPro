@@ -1,0 +1,38 @@
+# Gradle
+.gradle/
+build/
+out/
+docs/
+
+# IntelliJ IDEA / JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# IntelliJ Platform Gradle Plugin caches
+.intellijPlatform/
+.kotlin/
+
+# Superpowers / local agent workspace files
+.superpowers/
+
+# Logs and temporary files
+logs/
+*.log
+derby.log
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VCS / legacy metadata
+.svn/
+
+# Local planning files
+.planning
+
+# Local build configuration
+local.properties

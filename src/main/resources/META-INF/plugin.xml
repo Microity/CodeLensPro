@@ -1,0 +1,65 @@
+<idea-plugin>
+    <id>com.codelens.pro</id>
+    <name>CodeLens Pro</name>
+    <vendor url="https://github.com/Microity">micro</vendor>
+
+    <description><![CDATA[
+        <h2>CodeLens Pro</h2>
+
+        <p>
+            CodeLens Pro is a lightweight editor minimap plugin for IntelliJ IDEA. It adds a compact code overview next to the editor,
+            helping you navigate large files faster and understand the structure of your code at a glance.
+        </p>
+
+        <h3>Features</h3>
+        <ul>
+            <li>Editor minimap with compact code texture rendering</li>
+            <li>BufferedImage-based raster rendering for smoother minimap output</li>
+            <li>Unified minimap layout so short files are not stretched</li>
+            <li>Fold-aware minimap layout</li>
+            <li>Viewport indicator for quick orientation</li>
+            <li>Caret line marker</li>
+            <li>Error, warning, and markup indicators</li>
+            <li>Resizable minimap width</li>
+            <li>Optional hiding of the default vertical scrollbar</li>
+            <li>Large-file safeguards to reduce memory and UI overhead</li>
+            <li>Toggle action with <code>Ctrl + Shift + G</code></li>
+        </ul>
+
+        <h3>Inspired by CodeGlance Pro</h3>
+        <p>
+            CodeLens Pro was inspired by the excellent CodeGlance Pro plugin.
+        </p>
+        <ul>
+            <li>CodeGlance Pro GitHub: <a href="https://github.com/Nasller/CodeGlancePro">https://github.com/Nasller/CodeGlancePro</a></li>
+            <li>CodeGlance Pro Marketplace: <a href="https://plugins.jetbrains.com/plugin/18824-codeglance-pro">https://plugins.jetbrains.com/plugin/18824-codeglance-pro</a></li>
+        </ul>
+        <p>
+            This plugin references the general minimap interaction and rendering ideas from CodeGlance Pro, while using its own plugin identity,
+            package namespace, settings, implementation, and user experience. CodeLens Pro is not affiliated with, endorsed by, or maintained by
+            the CodeGlance Pro project or its authors.
+        </p>
+
+        <h3>Privacy</h3>
+        <p>
+            CodeLens Pro works locally inside the IDE. It does not collect, transmit, or store source code, project files, telemetry, or personal data.
+        </p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+            parentId="tools"
+            instance="com.codelens.pro.CodeLensProConfigurable"
+            id="com.codelens.pro.settings"
+            displayName="CodeLens Pro" />
+        <postStartupActivity implementation="com.codelens.pro.CodeLensProStartupActivity" />
+    </extensions>
+
+    <actions>
+        <action id="CodeLensPro.Toggle" class="com.codelens.pro.ToggleCodeLensProAction" text="Toggle CodeLens Pro">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift G" />
+        </action>
+    </actions>
+</idea-plugin>
