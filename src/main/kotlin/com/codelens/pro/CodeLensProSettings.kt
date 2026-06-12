@@ -17,7 +17,6 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
         var showViewport: Boolean = true,
         var showCaretLine: Boolean = true,
         var showErrorsAndWarnings: Boolean = true,
-        var showVcsChanges: Boolean = true,
         var showMarkupHighlights: Boolean = true,
         var useEditorColorScheme: Boolean = true,
         var useSimplifiedLanguageColors: Boolean = true,
@@ -69,10 +68,6 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
     var showErrorsAndWarnings: Boolean
         get() = state.showErrorsAndWarnings
         set(value) { state.showErrorsAndWarnings = value }
-
-    var showVcsChanges: Boolean
-        get() = state.showVcsChanges
-        set(value) { state.showVcsChanges = value }
 
     var showMarkupHighlights: Boolean
         get() = state.showMarkupHighlights

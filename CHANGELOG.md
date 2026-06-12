@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.2
+
+- Removed unused glyph-kind rendering code left from earlier minimap rendering experiments.
+- Removed inactive VCS change placeholder UI and collector to reduce runtime footprint.
+- Updated plugin icons with the selected CL + minimap design.
+- Rebuilt plugin package for JetBrains Marketplace submission.
+
+## 1.0.1
+
+- Replaced deprecated `Document.addDocumentListener(DocumentListener)` usage with disposable-bound listener registration.
+- Replaced deprecated no-argument `RangeHighlighter.getTextAttributes()` usage with color-scheme-aware API.
+- Rebuilt plugin package for JetBrains Marketplace verification.
+
 ## 1.0.0
 
 - Initial public release for local testing and GitHub preparation.

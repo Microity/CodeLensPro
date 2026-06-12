@@ -15,7 +15,8 @@ class HighlightCollector {
             if (highlighter.targetArea != HighlighterTargetArea.LINES_IN_RANGE && highlighter.endOffset <= highlighter.startOffset) continue
             val startLine = document.getLineNumber(highlighter.startOffset.coerceIn(0, document.textLength))
             val endLine = document.getLineNumber(highlighter.endOffset.coerceIn(0, document.textLength))
-            val color = highlighter.getErrorStripeMarkColor(editor.colorsScheme) ?: highlighter.textAttributes?.errorStripeColor ?: highlighter.textAttributes?.backgroundColor
+            val attributes = highlighter.textAttributesKey?.let { editor.colorsScheme.getAttributes(it) }
+            val color = highlighter.getErrorStripeMarkColor(editor.colorsScheme) ?: attributes?.errorStripeColor ?: attributes?.backgroundColor
             val lane = laneFor(highlighter, settings) ?: continue
             result.add(HighlightInfo(startLine, endLine, color ?: defaultColor(lane, colors), lane))
         }

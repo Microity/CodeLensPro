@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.codelens.pro</id>
     <name>CodeLens Pro</name>
-    <vendor url="https://github.com/Microity">micro</vendor>
+    <vendor url="https://github.com/Microity/CodeLensPro">micro</vendor>
 
     <description><![CDATA[
         <h2>CodeLens Pro</h2>

@@ -2,6 +2,7 @@ package com.codelens.pro
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
@@ -48,6 +49,7 @@ class CodeLensProPanel(
     private var currentResizeWidth = width
     private val documentListener = object : DocumentListener {
         override fun documentChanged(event: DocumentEvent) {
+            if (event.document !== editor.document) return
             scheduleRebuild()
         }
     }
@@ -124,7 +126,7 @@ class CodeLensProPanel(
         addMouseListener(mouseHandler)
         addMouseMotionListener(mouseHandler)
 
-        editor.document.addDocumentListener(documentListener)
+        EditorFactory.getInstance().eventMulticaster.addDocumentListener(documentListener, this)
         editor.caretModel.addCaretListener(caretListener)
         editor.scrollingModel.addVisibleAreaListener(visibleAreaListener)
         runCatching {
@@ -220,7 +222,6 @@ class CodeLensProPanel(
     override fun dispose() {
         rebuildTimer?.stop()
         clearMinimapImage()
-        editor.document.removeDocumentListener(documentListener)
         editor.caretModel.removeCaretListener(caretListener)
         editor.scrollingModel.removeVisibleAreaListener(visibleAreaListener)
     }

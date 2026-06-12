@@ -120,7 +120,6 @@ class CodeLensProPainter {
             g.color = highlight.color
             val x = when (highlight.lane) {
                 HighlightLane.ERROR, HighlightLane.WARNING -> bounds.x + bounds.width - 5
-                HighlightLane.VCS_ADDED, HighlightLane.VCS_MODIFIED, HighlightLane.VCS_DELETED -> bounds.x
                 else -> bounds.x + bounds.width - 10
             }
             val startVisualLine = snapshot.visualLineForDocumentLine(highlight.startLine)

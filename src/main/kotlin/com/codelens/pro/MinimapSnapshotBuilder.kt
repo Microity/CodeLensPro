@@ -5,7 +5,6 @@ import kotlin.math.max
 
 class MinimapSnapshotBuilder(
     private val highlightCollector: HighlightCollector = HighlightCollector(),
-    private val vcsChangeCollector: VcsChangeCollector = VcsChangeCollector(),
     private val tokenColorCollector: TokenColorCollector = TokenColorCollector(),
     private val charGlyphCollector: CharGlyphCollector = CharGlyphCollector(),
 ) {
@@ -56,7 +55,7 @@ class MinimapSnapshotBuilder(
             null
         }
         val highlights = when (mode) {
-            RenderMode.FULL -> highlightCollector.collect(editor, settings, colors) + vcsChangeCollector.collect(editor, settings, colors)
+            RenderMode.FULL -> highlightCollector.collect(editor, settings, colors)
             RenderMode.SIMPLIFIED -> highlightCollector.collect(editor, settings, colors).filter { it.lane == HighlightLane.ERROR || it.lane == HighlightLane.WARNING }
             RenderMode.MINIMAL -> emptyList()
         }

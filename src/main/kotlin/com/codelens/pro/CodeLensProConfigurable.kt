@@ -58,7 +58,6 @@ class CodeLensProConfigurable : Configurable {
         checkbox("showViewport", "Show viewport", settings.showViewport)
         checkbox("showCaretLine", "Show caret line", settings.showCaretLine)
         checkbox("showErrorsAndWarnings", "Show errors and warnings", settings.showErrorsAndWarnings)
-        checkbox("showVcsChanges", "Show VCS changes", settings.showVcsChanges)
         checkbox("showMarkupHighlights", "Show markup/search/inspection highlights", settings.showMarkupHighlights)
         checkbox("useEditorColorScheme", "Use editor color scheme", settings.useEditorColorScheme)
         checkbox("useSimplifiedLanguageColors", "Use simplified language colors", settings.useSimplifiedLanguageColors)
@@ -83,7 +82,6 @@ class CodeLensProConfigurable : Configurable {
             bool("showViewport") != settings.showViewport ||
             bool("showCaretLine") != settings.showCaretLine ||
             bool("showErrorsAndWarnings") != settings.showErrorsAndWarnings ||
-            bool("showVcsChanges") != settings.showVcsChanges ||
             bool("showMarkupHighlights") != settings.showMarkupHighlights ||
             bool("useEditorColorScheme") != settings.useEditorColorScheme ||
             bool("useSimplifiedLanguageColors") != settings.useSimplifiedLanguageColors ||
@@ -99,7 +97,6 @@ class CodeLensProConfigurable : Configurable {
         settings.showViewport = bool("showViewport")
         settings.showCaretLine = bool("showCaretLine")
         settings.showErrorsAndWarnings = bool("showErrorsAndWarnings")
-        settings.showVcsChanges = bool("showVcsChanges")
         settings.showMarkupHighlights = bool("showMarkupHighlights")
         settings.useEditorColorScheme = bool("useEditorColorScheme")
         settings.useSimplifiedLanguageColors = bool("useSimplifiedLanguageColors")
@@ -117,7 +114,6 @@ class CodeLensProConfigurable : Configurable {
         checkBoxes["showViewport"]?.isSelected = settings.showViewport
         checkBoxes["showCaretLine"]?.isSelected = settings.showCaretLine
         checkBoxes["showErrorsAndWarnings"]?.isSelected = settings.showErrorsAndWarnings
-        checkBoxes["showVcsChanges"]?.isSelected = settings.showVcsChanges
         checkBoxes["showMarkupHighlights"]?.isSelected = settings.showMarkupHighlights
         checkBoxes["useEditorColorScheme"]?.isSelected = settings.useEditorColorScheme
         checkBoxes["useSimplifiedLanguageColors"]?.isSelected = settings.useSimplifiedLanguageColors

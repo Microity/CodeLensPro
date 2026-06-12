@@ -32,7 +32,7 @@ data class HighlightInfo(
     val lane: HighlightLane,
 )
 
-enum class HighlightLane { MARKUP, ERROR, WARNING, VCS_ADDED, VCS_MODIFIED, VCS_DELETED }
+enum class HighlightLane { MARKUP, ERROR, WARNING }
 
 data class MinimapSnapshot(
     val lineCount: Int,
