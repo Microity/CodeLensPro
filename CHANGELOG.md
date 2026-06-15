@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Lowered minimum supported IntelliJ Platform build to `261` for IntelliJ IDEA 2026.1 compatibility metadata.
+- Rebuilt plugin package for JetBrains Marketplace verification.
+
 ## 1.0.2
 
 - Removed unused glyph-kind rendering code left from earlier minimap rendering experiments.
