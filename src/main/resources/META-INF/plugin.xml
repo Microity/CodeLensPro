@@ -26,16 +26,9 @@
             <li>Toggle action with <code>Ctrl + Shift + G</code></li>
         </ul>
 
-        <h3>Inspired by CodeGlance Pro</h3>
+        <h3>Acknowledgements</h3>
         <p>
-            CodeLens Pro was inspired by the excellent CodeGlance Pro plugin.
-        </p>
-        <ul>
-            <li>CodeGlance Pro GitHub: <a href="https://github.com/Nasller/CodeGlancePro">https://github.com/Nasller/CodeGlancePro</a></li>
-            <li>CodeGlance Pro Marketplace: <a href="https://plugins.jetbrains.com/plugin/18824-codeglance-pro">https://plugins.jetbrains.com/plugin/18824-codeglance-pro</a></li>
-        </ul>
-        <p>
-            This plugin references the general minimap interaction and rendering ideas from CodeGlance Pro, while using its own plugin identity,
+            CodeLens Pro was inspired by the excellent CodeGlance Pro plugin. It is independently implemented and uses its own plugin identity,
             package namespace, settings, implementation, and user experience. CodeLens Pro is not affiliated with, endorsed by, or maintained by
             the CodeGlance Pro project or its authors.
         </p>

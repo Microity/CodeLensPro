@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4
+
+- Cleaned the JetBrains Marketplace plugin description by removing third-party plugin links from `plugin.xml` while keeping the CodeGlance Pro acknowledgement.
+- Kept project acknowledgements in the GitHub README while avoiding Marketplace ad classification.
+- Rebuilt plugin package for Marketplace submission.
+
 ## 1.0.3
 
 - Lowered minimum supported IntelliJ Platform build to `261` for IntelliJ IDEA 2026.1 compatibility metadata.
