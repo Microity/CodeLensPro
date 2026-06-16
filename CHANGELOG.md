@@ -1,9 +1,16 @@
 # Changelog
 
+## 1.0.4.1
+
+- Restored full CodeGlance Pro acknowledgement links in the plugin description.
+- Added a clear no-ads and privacy statement to the plugin description.
+- Added Marketplace change notes for this release.
+- Updated plugin vendor display name to Croty.
+
 ## 1.0.4
 
-- Cleaned the JetBrains Marketplace plugin description by removing third-party plugin links from `plugin.xml` while keeping the CodeGlance Pro acknowledgement.
-- Kept project acknowledgements in the GitHub README while avoiding Marketplace ad classification.
+- Adjusted the JetBrains Marketplace plugin description while keeping the CodeGlance Pro acknowledgement.
+- Kept project acknowledgements in the GitHub README.
 - Rebuilt plugin package for Marketplace submission.
 
 ## 1.0.3

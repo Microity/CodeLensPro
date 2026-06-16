@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.codelens.pro</id>
     <name>CodeLens Pro</name>
-    <vendor url="https://github.com/Microity/CodeLensPro">micro</vendor>
+    <vendor url="https://github.com/Microity/CodeLensPro">Croty</vendor>
 
     <description><![CDATA[
         <h2>CodeLens Pro</h2>
@@ -28,12 +28,20 @@
 
         <h3>Acknowledgements</h3>
         <p>
-            CodeLens Pro was inspired by the excellent CodeGlance Pro plugin. It is independently implemented and uses its own plugin identity,
-            package namespace, settings, implementation, and user experience. CodeLens Pro is not affiliated with, endorsed by, or maintained by
-            the CodeGlance Pro project or its authors.
+            CodeLens Pro was inspired by CodeGlance Pro:
+        </p>
+        <ul>
+            <li>GitHub: https://github.com/Nasller/CodeGlancePro</li>
+            <li>JetBrains Marketplace: https://plugins.jetbrains.com/plugin/18824-codeglance-pro</li>
+        </ul>
+        <p>
+            CodeLens Pro is not affiliated with, endorsed by, or maintained by the CodeGlance Pro project or its authors.
         </p>
 
-        <h3>Privacy</h3>
+        <h3>No Ads and Privacy</h3>
+        <p>
+            CodeLens Pro does not display ads, sponsored content, affiliate links, tracking, telemetry, or promotional popups.
+        </p>
         <p>
             CodeLens Pro works locally inside the IDE. It does not collect, transmit, or store source code, project files, telemetry, or personal data.
         </p>
