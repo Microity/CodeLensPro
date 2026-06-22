@@ -36,9 +36,8 @@ intellijPlatform {
         version = providers.gradleProperty("pluginVersion")
         changeNotes = """
             <ul>
-                <li>Restored full acknowledgement links for CodeGlance Pro, the project that inspired CodeLens Pro.</li>
-                <li>Added a clear no-ads and privacy statement: CodeLens Pro does not display ads, sponsored content, affiliate links, tracking, telemetry, or promotional popups.</li>
-                <li>Confirmed that the plugin works locally inside the IDE and does not collect, transmit, or store source code, project files, telemetry, or personal data.</li>
+                <li>Limited the minimap to appropriate full editor surfaces so it no longer appears in dialog-backed input fields such as new branch name fields.</li>
+                <li>Kept minimap support for main editors, diff editors, terminals, consoles, and run output logs.</li>
             </ul>
         """.trimIndent()
         ideaVersion {

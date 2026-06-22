@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Limited the minimap to appropriate full editor surfaces to avoid showing it in dialog-backed input fields such as new branch name fields.
+- Kept minimap support for main editors, diff editors, terminals, consoles, and run output logs.
+
 ## 1.0.4.1
 
 - Restored full CodeGlance Pro acknowledgement links in the plugin description.

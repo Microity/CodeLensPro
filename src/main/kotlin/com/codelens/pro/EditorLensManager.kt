@@ -24,6 +24,7 @@ class EditorLensManager private constructor() {
         val settings = CodeLensProSettings.getInstance()
         if (!settings.enabled) return
         if (panels.containsKey(editor)) return
+        if (!EditorEligibility.isEligible(editor)) return
         val parent = editor.component as? JComponent ?: return
         if (parent.layout !is BorderLayout) return
         val width = widthFor(editor, settings)
