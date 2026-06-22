@@ -2,33 +2,25 @@
 
 ## 1.0.5
 
-- Limited the minimap to appropriate full editor surfaces to avoid showing it in dialog-backed input fields such as new branch name fields.
-- Kept minimap support for main editors, diff editors, terminals, consoles, and run output logs.
+- Improved minimap placement across the IDE.
+- Removed the minimap from small dialog input fields while keeping editor, diff, terminal, console, and run log support.
 
 ## 1.0.4.1
 
-- Restored full CodeGlance Pro acknowledgement links in the plugin description.
-- Added a clear no-ads and privacy statement to the plugin description.
-- Added Marketplace change notes for this release.
-- Updated plugin vendor display name to Croty.
+- Updated plugin description, acknowledgements, vendor, and privacy information.
 
 ## 1.0.4
 
-- Adjusted the JetBrains Marketplace plugin description while keeping the CodeGlance Pro acknowledgement.
-- Kept project acknowledgements in the GitHub README.
-- Rebuilt plugin package for Marketplace submission.
+- Refined Marketplace description and release metadata.
 
 ## 1.0.3
 
-- Lowered minimum supported IntelliJ Platform build to `261` for IntelliJ IDEA 2026.1 compatibility metadata.
-- Rebuilt plugin package for JetBrains Marketplace verification.
+- Updated compatibility metadata for IntelliJ Platform 2026.1+.
 
 ## 1.0.2
 
-- Removed unused glyph-kind rendering code left from earlier minimap rendering experiments.
-- Removed inactive VCS change placeholder UI and collector to reduce runtime footprint.
-- Updated plugin icons with the selected CL + minimap design.
-- Rebuilt plugin package for JetBrains Marketplace submission.
+- Reduced package size by removing unused code and placeholder features.
+- Updated plugin icons.
 
 ## 1.0.1
 

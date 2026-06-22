@@ -35,9 +35,31 @@ intellijPlatform {
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
         changeNotes = """
+            <h3>1.0.5</h3>
             <ul>
-                <li>Limited the minimap to appropriate full editor surfaces so it no longer appears in dialog-backed input fields such as new branch name fields.</li>
-                <li>Kept minimap support for main editors, diff editors, terminals, consoles, and run output logs.</li>
+                <li>Improved minimap placement across the IDE.</li>
+                <li>Removed the minimap from small dialog input fields while keeping editor, diff, terminal, console, and run log support.</li>
+            </ul>
+
+            <h3>1.0.4.1</h3>
+            <ul>
+                <li>Updated plugin description, acknowledgements, vendor, and privacy information.</li>
+            </ul>
+
+            <h3>1.0.4</h3>
+            <ul>
+                <li>Refined Marketplace description and release metadata.</li>
+            </ul>
+
+            <h3>1.0.3</h3>
+            <ul>
+                <li>Updated compatibility metadata for IntelliJ Platform 2026.1+.</li>
+            </ul>
+
+            <h3>1.0.2</h3>
+            <ul>
+                <li>Reduced package size by removing unused code and placeholder features.</li>
+                <li>Updated plugin icons.</li>
             </ul>
         """.trimIndent()
         ideaVersion {
