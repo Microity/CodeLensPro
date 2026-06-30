@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5.1
+
+- Fixed a Marketplace compatibility verification issue where the plugin archive could not be extracted.
+
 ## 1.0.5
 
 - Improved minimap placement across the IDE.

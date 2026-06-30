@@ -35,6 +35,11 @@ intellijPlatform {
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
         changeNotes = """
+            <h3>1.0.5.1</h3>
+            <ul>
+                <li>Fixed a Marketplace compatibility verification issue where the plugin archive could not be extracted.</li>
+            </ul>
+
             <h3>1.0.5</h3>
             <ul>
                 <li>Improved minimap placement across the IDE.</li>
