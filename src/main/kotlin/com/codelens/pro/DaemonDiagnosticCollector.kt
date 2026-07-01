@@ -11,7 +11,7 @@ class DaemonDiagnosticCollector {
         if (!settings.showErrorsAndWarnings) return emptyList()
         val project = editor.project ?: return emptyList()
         val document = editor.document
-        return ReadAction.compute<List<HighlightInfo>, RuntimeException> {
+        return ReadAction.computeBlocking<List<HighlightInfo>, RuntimeException> {
             val result = ArrayList<HighlightInfo>(256)
             val textLength = document.textLength
             DaemonCodeAnalyzerEx.processHighlights(
