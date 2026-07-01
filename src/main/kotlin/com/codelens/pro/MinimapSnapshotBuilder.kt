@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.Editor
 import kotlin.math.max
 
 class MinimapSnapshotBuilder(
-    private val highlightCollector: HighlightCollector = HighlightCollector(),
+    private val diagnosticCollector: DaemonDiagnosticCollector = DaemonDiagnosticCollector(),
     private val tokenColorCollector: TokenColorCollector = TokenColorCollector(),
     private val charGlyphCollector: CharGlyphCollector = CharGlyphCollector(),
 ) {
@@ -54,11 +54,7 @@ class MinimapSnapshotBuilder(
         } else {
             null
         }
-        val highlights = when (mode) {
-            RenderMode.FULL -> highlightCollector.collect(editor, settings, colors)
-            RenderMode.SIMPLIFIED -> highlightCollector.collect(editor, settings, colors)
-            RenderMode.MINIMAL -> emptyList()
-        }
+        val highlights = if (mode == RenderMode.MINIMAL) emptyList() else diagnosticCollector.collect(editor, settings, colors)
         return MinimapSnapshot(
             lineCount,
             lineMapping.visualLineCount,

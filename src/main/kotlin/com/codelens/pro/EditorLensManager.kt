@@ -4,11 +4,12 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.editor.event.EditorFactoryEvent
+import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.util.Disposer
 import java.awt.BorderLayout
 import java.awt.Dimension
-import javax.swing.JComponent
 import javax.swing.JPanel
 
 class EditorLensManager private constructor() {
@@ -16,6 +17,23 @@ class EditorLensManager private constructor() {
     private val lensPanels = mutableMapOf<EditorEx, CodeLensProPanel>()
     private val disposables = mutableMapOf<EditorEx, Disposable>()
     private val scrollbarState = mutableMapOf<EditorEx, ScrollbarState>()
+    private var initialized = false
+
+    fun initialize() {
+        if (initialized) return
+        initialized = true
+        val editorFactory = EditorFactory.getInstance()
+        editorFactory.addEditorFactoryListener(object : EditorFactoryListener {
+            override fun editorCreated(event: EditorFactoryEvent) {
+                attach(event.editor as? EditorEx ?: return)
+            }
+
+            override fun editorReleased(event: EditorFactoryEvent) {
+                detach(event.editor as? EditorEx ?: return)
+            }
+        }, ApplicationManager.getApplication())
+        attachExistingEditors()
+    }
 
     fun attachExistingEditors() {
         EditorFactory.getInstance().allEditors.forEach { attach(it as? EditorEx ?: return@forEach) }
@@ -26,7 +44,7 @@ class EditorLensManager private constructor() {
         if (!settings.enabled) return
         if (panels.containsKey(editor)) return
         if (!EditorEligibility.isEligible(editor)) return
-        val parent = editor.component as? JComponent ?: return
+        val parent = editor.component
         if (parent.layout !is BorderLayout) return
         val width = widthFor(editor, settings)
         val lensPanel = CodeLensProPanel(editor, settings, width)
@@ -40,7 +58,7 @@ class EditorLensManager private constructor() {
         panels[editor] = wrapper
         lensPanels[editor] = lensPanel
         applyScrollbarPolicy(editor, settings)
-        val disposable = Disposable { detach(editor) }
+        val disposable = Disposer.newDisposable("CodeLensProPanel")
         disposables[editor] = disposable
         lensPanel.register(disposable)
         log("Attached CodeLens Pro minimap")
@@ -48,9 +66,10 @@ class EditorLensManager private constructor() {
 
     fun detach(editor: EditorEx) {
         restoreScrollbar(editor)
+        disposables.remove(editor)?.let { Disposer.dispose(it) }
         val wrapper = panels.remove(editor)
-        val parent = editor.component as? JComponent
-        if (wrapper != null && parent != null) {
+        val parent = editor.component
+        if (wrapper != null) {
             parent.remove(wrapper)
             parent.revalidate()
             parent.repaint()

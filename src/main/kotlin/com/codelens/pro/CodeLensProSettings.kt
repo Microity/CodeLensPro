@@ -14,10 +14,7 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
         var width: Int = DEFAULT_WIDTH,
         var autoWidth: Boolean = true,
         var hideOriginalScrollbar: Boolean = false,
-        var showViewport: Boolean = true,
-        var showCaretLine: Boolean = true,
         var showErrorsAndWarnings: Boolean = true,
-        var useEditorColorScheme: Boolean = true,
         var useSimplifiedLanguageColors: Boolean = true,
         var largeFileLineThreshold: Int = DEFAULT_LARGE_FILE_LINE_THRESHOLD,
         var hugeFileLineThreshold: Int = DEFAULT_HUGE_FILE_LINE_THRESHOLD,
@@ -56,21 +53,9 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
         get() = state.hideOriginalScrollbar
         set(value) { state.hideOriginalScrollbar = value }
 
-    var showViewport: Boolean
-        get() = state.showViewport
-        set(value) { state.showViewport = value }
-
-    var showCaretLine: Boolean
-        get() = state.showCaretLine
-        set(value) { state.showCaretLine = value }
-
     var showErrorsAndWarnings: Boolean
         get() = state.showErrorsAndWarnings
         set(value) { state.showErrorsAndWarnings = value }
-
-    var useEditorColorScheme: Boolean
-        get() = state.useEditorColorScheme
-        set(value) { state.useEditorColorScheme = value }
 
     var useSimplifiedLanguageColors: Boolean
         get() = state.useSimplifiedLanguageColors

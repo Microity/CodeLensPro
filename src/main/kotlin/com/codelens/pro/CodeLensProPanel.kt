@@ -43,6 +43,7 @@ class CodeLensProPanel(
     private val painter = CodeLensProPainter()
     private val snapshotBuilder = MinimapSnapshotBuilder()
     private val imageRenderer = MinimapImageRenderer()
+    private val diagnosticCollector = DaemonDiagnosticCollector()
     private val popupMenu = CodeLensProPopupMenu()
     private var snapshot: MinimapSnapshot = snapshotBuilder.build(editor, settings)
     private var minimapImage: BufferedImage? = null
@@ -332,15 +333,8 @@ class CodeLensProPanel(
     }
 
     private fun refreshHighlightsAndRepaint() {
-        if (!settings.showErrorsAndWarnings) {
-            if (snapshot.highlights.isNotEmpty()) {
-                snapshot = snapshot.copy(highlights = emptyList())
-                repaint()
-            }
-            return
-        }
         val colors = ColorSchemeAdapter(editor, settings)
-        val highlights = HighlightCollector().collect(editor, settings, colors)
+        val highlights = diagnosticCollector.collect(editor, settings, colors)
         if (snapshot.highlights != highlights) {
             snapshot = snapshot.copy(highlights = highlights)
             repaint()

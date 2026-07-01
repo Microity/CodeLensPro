@@ -45,7 +45,7 @@ CodeLens Pro works locally inside the IDE. It does not collect, transmit, or sto
 
 ## Compatibility
 
-CodeLens Pro targets IntelliJ IDEA 2026.2 EAP and IntelliJ Platform build `262+`.
+CodeLens Pro targets IntelliJ IDEA 2026.1+ and IntelliJ Platform build `261+`.
 
 When building from source, provide the local IntelliJ IDEA installation path with either the `localIdePath` Gradle property or the `CODELENS_PRO_IDE_PATH` environment variable.
 

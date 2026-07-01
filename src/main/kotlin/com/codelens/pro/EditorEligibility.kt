@@ -8,7 +8,6 @@ object EditorEligibility {
     data class Context(
         val hasVirtualFile: Boolean,
         val isOneLineMode: Boolean,
-        val isViewer: Boolean,
         val isRendererMode: Boolean,
         val isEmbeddedIntoDialogWrapper: Boolean,
         val editorKind: EditorKind,
@@ -27,7 +26,6 @@ object EditorEligibility {
         Context(
             hasVirtualFile = FileDocumentManager.getInstance().getFile(editor.document) != null,
             isOneLineMode = editor.isOneLineMode,
-            isViewer = editor.isViewer,
             isRendererMode = editor.isRendererMode,
             isEmbeddedIntoDialogWrapper = editor.isEmbeddedIntoDialogWrapper,
             editorKind = editor.editorKind,
