@@ -11,17 +11,9 @@ class ColorSchemeAdapter(private val editor: Editor, private val settings: CodeL
     private val scheme = editor.colorsScheme ?: EditorColorsManager.getInstance().globalScheme
     private val paintCache = HashMap<Int, Color>(8)
 
-    val background: Color = if (settings.useEditorColorScheme) {
-        scheme.defaultBackground
-    } else {
-        JBColor(Color(0xF5F5F5), Color(0x2B2D30))
-    }
+    val background: Color = scheme.defaultBackground
 
-    val text: Color = if (settings.useEditorColorScheme) {
-        dim(scheme.defaultForeground, 0.62f)
-    } else {
-        JBColor(Color(0x8A8A8A), Color(0x8F949B))
-    }
+    val text: Color = dim(scheme.defaultForeground, 0.62f)
 
     val comment: Color = scheme.getAttributes(EditorColors.FOLDED_TEXT_ATTRIBUTES)?.foregroundColor ?: JBColor.GRAY
     val keyword: Color = scheme.getFont(EditorFontType.BOLD).let { text.brighter() }

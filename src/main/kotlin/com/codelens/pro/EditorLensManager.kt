@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.util.Disposer
 import java.awt.BorderLayout
+import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -14,7 +15,7 @@ class EditorLensManager private constructor() {
     private val panels = mutableMapOf<EditorEx, JPanel>()
     private val lensPanels = mutableMapOf<EditorEx, CodeLensProPanel>()
     private val disposables = mutableMapOf<EditorEx, Disposable>()
-    private val scrollbarPolicies = mutableMapOf<EditorEx, Int>()
+    private val scrollbarState = mutableMapOf<EditorEx, ScrollbarState>()
 
     fun attachExistingEditors() {
         EditorFactory.getInstance().allEditors.forEach { attach(it as? EditorEx ?: return@forEach) }
@@ -79,18 +80,34 @@ class EditorLensManager private constructor() {
     }
 
     private fun applyScrollbarPolicy(editor: EditorEx, settings: CodeLensProSettings) {
-        val scrollPane = editor.scrollPane
-        if (!scrollbarPolicies.containsKey(editor)) {
-            scrollbarPolicies[editor] = scrollPane.verticalScrollBarPolicy
+        val scrollbar = editor.scrollPane.verticalScrollBar
+        if (!scrollbarState.containsKey(editor)) {
+            scrollbarState[editor] = ScrollbarState(
+                visible = scrollbar.isVisible,
+                preferredSize = scrollbar.preferredSize,
+                minimumSize = scrollbar.minimumSize,
+                maximumSize = scrollbar.maximumSize,
+            )
         }
         if (settings.hideOriginalScrollbar) {
-            scrollPane.verticalScrollBarPolicy = javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER
+            editor.setVerticalScrollbarVisible(true)
+            val hiddenSize = Dimension(0, 0)
+            scrollbar.preferredSize = hiddenSize
+            scrollbar.minimumSize = hiddenSize
+            scrollbar.maximumSize = hiddenSize
+            scrollbar.isOpaque = false
+        } else {
+            restoreScrollbar(editor, keepState = true)
         }
     }
 
-    private fun restoreScrollbar(editor: EditorEx) {
-        val oldPolicy = scrollbarPolicies.remove(editor) ?: return
-        editor.scrollPane.verticalScrollBarPolicy = oldPolicy
+    private fun restoreScrollbar(editor: EditorEx, keepState: Boolean = false) {
+        val oldState = (if (keepState) scrollbarState[editor] else scrollbarState.remove(editor)) ?: return
+        val scrollbar = editor.scrollPane.verticalScrollBar
+        scrollbar.preferredSize = oldState.preferredSize
+        scrollbar.minimumSize = oldState.minimumSize
+        scrollbar.maximumSize = oldState.maximumSize
+        editor.setVerticalScrollbarVisible(oldState.visible)
     }
 
     private fun log(message: String) {
@@ -102,4 +119,11 @@ class EditorLensManager private constructor() {
         private val INSTANCE = EditorLensManager()
         fun getInstance(): EditorLensManager = INSTANCE
     }
+
+    private data class ScrollbarState(
+        val visible: Boolean,
+        val preferredSize: Dimension,
+        val minimumSize: Dimension,
+        val maximumSize: Dimension,
+    )
 }

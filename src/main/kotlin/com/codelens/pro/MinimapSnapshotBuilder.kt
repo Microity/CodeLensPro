@@ -56,7 +56,7 @@ class MinimapSnapshotBuilder(
         }
         val highlights = when (mode) {
             RenderMode.FULL -> highlightCollector.collect(editor, settings, colors)
-            RenderMode.SIMPLIFIED -> highlightCollector.collect(editor, settings, colors).filter { it.lane == HighlightLane.ERROR || it.lane == HighlightLane.WARNING }
+            RenderMode.SIMPLIFIED -> highlightCollector.collect(editor, settings, colors)
             RenderMode.MINIMAL -> emptyList()
         }
         return MinimapSnapshot(

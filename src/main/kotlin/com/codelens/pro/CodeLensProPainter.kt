@@ -31,8 +31,8 @@ class CodeLensProPainter {
 
         paintFoldPlaceholders(g, colors, snapshot, bounds, layout)
         paintHighlights(g, colors, snapshot, bounds, layout)
-        if (settings.showViewport) paintViewport(g, editor, colors, snapshot, bounds, layout)
-        if (settings.showCaretLine) paintCaret(g, colors, snapshot, bounds, layout)
+        paintViewport(g, editor, colors, snapshot, bounds, layout)
+        paintCaret(g, colors, snapshot, bounds, layout)
     }
 
     private fun paintFallbackLines(g: Graphics2D, colors: ColorSchemeAdapter, snapshot: MinimapSnapshot, bounds: Rectangle, heightPerLine: Double) {
@@ -118,10 +118,7 @@ class CodeLensProPainter {
     private fun paintHighlights(g: Graphics2D, colors: ColorSchemeAdapter, snapshot: MinimapSnapshot, bounds: Rectangle, layout: MinimapLayout) {
         snapshot.highlights.forEach { highlight ->
             g.color = highlight.color
-            val x = when (highlight.lane) {
-                HighlightLane.ERROR, HighlightLane.WARNING -> bounds.x + bounds.width - 5
-                else -> bounds.x + bounds.width - 10
-            }
+            val x = bounds.x + bounds.width - 5
             val startVisualLine = snapshot.visualLineForDocumentLine(highlight.startLine)
             val endVisualLine = snapshot.visualLineForDocumentLine(highlight.endLine)
             val y = bounds.y + layout.yForVisualLine(startVisualLine)

@@ -1,6 +1,8 @@
 package com.codelens.pro
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ScrollType
@@ -10,9 +12,16 @@ import com.intellij.openapi.editor.event.CaretEvent
 import com.intellij.openapi.editor.event.CaretListener
 import com.intellij.openapi.editor.event.VisibleAreaEvent
 import com.intellij.openapi.editor.event.VisibleAreaListener
+import com.intellij.openapi.editor.ex.MarkupModelEx
+import com.intellij.openapi.editor.ex.RangeHighlighterEx
+import com.intellij.openapi.editor.impl.DocumentMarkupModel
+import com.intellij.openapi.editor.impl.event.MarkupModelListener
 import com.intellij.openapi.editor.ex.FoldingListener
 import com.intellij.openapi.editor.ex.FoldingModelEx
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.util.Disposer
+import com.intellij.util.messages.MessageBusConnection
 import java.awt.Dimension
 import java.awt.Cursor
 import java.awt.Graphics
@@ -21,6 +30,7 @@ import java.awt.Rectangle
 import java.awt.image.BufferedImage
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.awt.event.MouseWheelEvent
 import javax.swing.JPanel
 import javax.swing.Timer
 import kotlin.math.max
@@ -39,6 +49,9 @@ class CodeLensProPanel(
     private var minimapImageWidth = -1
     private var minimapImageHeight = -1
     private var rebuildTimer: Timer? = null
+    private val diagnosticsScheduler = DiagnosticsRefreshScheduler()
+    private var diagnosticsRefreshTimer: Timer? = null
+    private var daemonConnection: MessageBusConnection? = null
     private var lastDragScrollNanos: Long = 0
     private var lastRepaintNanos: Long = 0
     private var dragViewportAnchorRatio: Double? = null
@@ -67,6 +80,28 @@ class CodeLensProPanel(
     private val foldingListener = object : FoldingListener {
         override fun onFoldProcessingEnd() {
             scheduleRebuild()
+        }
+    }
+    private val markupModelListener = object : MarkupModelListener {
+        override fun afterAdded(highlighter: RangeHighlighterEx) {
+            scheduleDiagnosticsRefresh()
+        }
+
+        override fun afterRemoved(highlighter: RangeHighlighterEx) {
+            scheduleDiagnosticsRefresh()
+        }
+
+        override fun attributesChanged(highlighter: RangeHighlighterEx, renderersChanged: Boolean, fontStyleOrColorChanged: Boolean) {
+            scheduleDiagnosticsRefresh()
+        }
+
+        override fun attributesChanged(
+            highlighter: RangeHighlighterEx,
+            renderersChanged: Boolean,
+            fontStyleOrColorChanged: Boolean,
+            gutterIconRendererChanged: Boolean,
+        ) {
+            scheduleDiagnosticsRefresh()
         }
     }
 
@@ -115,6 +150,10 @@ class CodeLensProPanel(
                 scrollSmoothlyToEvent(event)
             }
 
+            override fun mouseWheelMoved(event: MouseWheelEvent) {
+                scrollByWheel(event)
+            }
+
             override fun mouseMoved(event: MouseEvent) {
                 cursor = if (isResizeArea(event.x)) Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR) else Cursor.getDefaultCursor()
             }
@@ -125,6 +164,7 @@ class CodeLensProPanel(
         }
         addMouseListener(mouseHandler)
         addMouseMotionListener(mouseHandler)
+        addMouseWheelListener(mouseHandler)
 
         EditorFactory.getInstance().eventMulticaster.addDocumentListener(documentListener, this)
         editor.caretModel.addCaretListener(caretListener)
@@ -132,6 +172,8 @@ class CodeLensProPanel(
         runCatching {
             (editor.foldingModel as? FoldingModelEx)?.addListener(foldingListener, this)
         }
+        registerMarkupModelListeners()
+        registerDaemonListener()
     }
 
     override fun paintComponent(graphics: Graphics) {
@@ -167,6 +209,21 @@ class CodeLensProPanel(
         val targetOffset = (ratio * maxOffset).toInt().coerceIn(0, maxOffset)
         editor.scrollingModel.disableAnimation()
         editor.scrollingModel.scrollVertically(targetOffset)
+    }
+
+    private fun scrollByWheel(event: MouseWheelEvent) {
+        val visibleArea = editor.scrollingModel.visibleArea
+        val targetOffset = MinimapWheelScroll.targetOffset(
+            currentOffset = visibleArea.y,
+            wheelRotation = event.wheelRotation,
+            scrollAmount = event.scrollAmount,
+            lineHeight = editor.lineHeight,
+            visibleHeight = visibleArea.height,
+            documentHeight = scrollableDocumentHeight(),
+        )
+        editor.scrollingModel.disableAnimation()
+        editor.scrollingModel.scrollVertically(targetOffset)
+        event.consume()
     }
 
     private fun viewportAnchorRatio(mouseY: Int): Double {
@@ -221,6 +278,10 @@ class CodeLensProPanel(
 
     override fun dispose() {
         rebuildTimer?.stop()
+        diagnosticsRefreshTimer?.stop()
+        diagnosticsScheduler.dispose()
+        daemonConnection?.disconnect()
+        daemonConnection = null
         clearMinimapImage()
         editor.caretModel.removeCaretListener(caretListener)
         editor.scrollingModel.removeVisibleAreaListener(visibleAreaListener)
@@ -230,10 +291,66 @@ class CodeLensProPanel(
         Disposer.register(parentDisposable, this)
     }
 
+    private fun registerMarkupModelListeners() {
+        (editor.markupModel as? MarkupModelEx)?.addMarkupModelListener(this, markupModelListener)
+        val project = editor.project ?: return
+        val documentMarkupModel = runCatching {
+            DocumentMarkupModel.forDocument(editor.document, project, false)
+        }.getOrNull()
+        (documentMarkupModel as? MarkupModelEx)?.addMarkupModelListener(this, markupModelListener)
+    }
+
+    private fun registerDaemonListener() {
+        val project = editor.project ?: return
+        daemonConnection = project.messageBus.connect(this)
+        daemonConnection?.subscribe(DaemonCodeAnalyzer.DAEMON_EVENT_TOPIC, object : DaemonCodeAnalyzer.DaemonListener {
+            override fun daemonFinished(fileEditors: Collection<FileEditor>) {
+                if (fileEditors.isEmpty() || fileEditors.any { fileEditorMatchesCurrentDocument(it) }) {
+                    scheduleDiagnosticsRefresh()
+                }
+            }
+        })
+    }
+
+    private fun fileEditorMatchesCurrentDocument(fileEditor: FileEditor): Boolean {
+        val textEditor = fileEditor as? TextEditor ?: return false
+        return textEditor.editor.document === editor.document
+    }
+
+    private fun scheduleDiagnosticsRefresh() {
+        ApplicationManager.getApplication().invokeLater {
+            if (!diagnosticsScheduler.markupChanged()) return@invokeLater
+            diagnosticsRefreshTimer?.stop()
+            diagnosticsRefreshTimer = Timer(DIAGNOSTICS_REFRESH_DEBOUNCE_MS) {
+                diagnosticsScheduler.refreshStarted()
+                refreshHighlightsAndRepaint()
+            }.apply {
+                isRepeats = false
+                start()
+            }
+        }
+    }
+
+    private fun refreshHighlightsAndRepaint() {
+        if (!settings.showErrorsAndWarnings) {
+            if (snapshot.highlights.isNotEmpty()) {
+                snapshot = snapshot.copy(highlights = emptyList())
+                repaint()
+            }
+            return
+        }
+        val colors = ColorSchemeAdapter(editor, settings)
+        val highlights = HighlightCollector().collect(editor, settings, colors)
+        if (snapshot.highlights != highlights) {
+            snapshot = snapshot.copy(highlights = highlights)
+            repaint()
+        }
+    }
+
     fun rebuildAndRepaint() {
         val currentFoldingStamp = snapshotBuilder.foldingStamp(editor)
         if (snapshot.documentStamp == editor.document.modificationStamp && snapshot.foldingStamp == currentFoldingStamp) {
-            repaint()
+            refreshHighlightsAndRepaint()
             return
         }
         snapshot = snapshotBuilder.build(editor, settings)
@@ -297,6 +414,7 @@ class CodeLensProPanel(
         private const val DRAG_THROTTLE_NANOS = 16_000_000L
         private const val REPAINT_THROTTLE_NANOS = 16_000_000L
         private const val REBUILD_DEBOUNCE_MS = 120
+        private const val DIAGNOSTICS_REFRESH_DEBOUNCE_MS = 40
         private const val RESIZE_HIT_WIDTH = 6
     }
 }

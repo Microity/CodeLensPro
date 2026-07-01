@@ -22,9 +22,7 @@ class CodeLensProPopupMenu {
 
         check("Enable CodeLens Pro", settings.enabled) { settings.enabled = it }
         check("Hide Original Scrollbar", settings.hideOriginalScrollbar) { settings.hideOriginalScrollbar = it }
-        check("Show Caret Line", settings.showCaretLine) { settings.showCaretLine = it }
         check("Show Errors / Warnings", settings.showErrorsAndWarnings) { settings.showErrorsAndWarnings = it }
-        check("Show Markup Highlights", settings.showMarkupHighlights) { settings.showMarkupHighlights = it }
         menu.addSeparator()
         menu.add(JMenuItem("Increase Width").apply {
             addActionListener {

@@ -35,6 +35,14 @@ intellijPlatform {
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
         changeNotes = """
+            <h3>1.0.6</h3>
+            <ul>
+                <li>Fixed mouse wheel scrolling when the original editor scrollbar is hidden.</li>
+                <li>Added minimap mouse wheel scrolling.</li>
+                <li>Improved error and warning marker accuracy and refresh behavior.</li>
+                <li>Simplified minimap highlights and settings.</li>
+            </ul>
+
             <h3>1.0.5.1</h3>
             <ul>
                 <li>Fixed a Marketplace compatibility verification issue where the plugin archive could not be extracted.</li>

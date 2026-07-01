@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.6
+
+- Fixed mouse wheel scrolling when the original editor scrollbar is hidden.
+- Added minimap mouse wheel scrolling.
+- Improved error and warning marker accuracy and refresh behavior.
+- Simplified minimap highlights and settings.
+
 ## 1.0.5.1
 
 - Fixed a Marketplace compatibility verification issue where the plugin archive could not be extracted.

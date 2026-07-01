@@ -55,11 +55,7 @@ class CodeLensProConfigurable : Configurable {
         spinner("width", "Minimap width:", settings.width, CodeLensProSettings.MIN_WIDTH, CodeLensProSettings.MAX_WIDTH, 5)
 
         section("Rendering")
-        checkbox("showViewport", "Show viewport", settings.showViewport)
-        checkbox("showCaretLine", "Show caret line", settings.showCaretLine)
         checkbox("showErrorsAndWarnings", "Show errors and warnings", settings.showErrorsAndWarnings)
-        checkbox("showMarkupHighlights", "Show markup/search/inspection highlights", settings.showMarkupHighlights)
-        checkbox("useEditorColorScheme", "Use editor color scheme", settings.useEditorColorScheme)
         checkbox("useSimplifiedLanguageColors", "Use simplified language colors", settings.useSimplifiedLanguageColors)
 
         section("Performance")
@@ -75,15 +71,11 @@ class CodeLensProConfigurable : Configurable {
     }
 
     override fun isModified(): Boolean =
-        bool("enabled") != settings.enabled ||
+            bool("enabled") != settings.enabled ||
             bool("autoWidth") != settings.autoWidth ||
             bool("hideOriginalScrollbar") != settings.hideOriginalScrollbar ||
             int("width") != settings.width ||
-            bool("showViewport") != settings.showViewport ||
-            bool("showCaretLine") != settings.showCaretLine ||
             bool("showErrorsAndWarnings") != settings.showErrorsAndWarnings ||
-            bool("showMarkupHighlights") != settings.showMarkupHighlights ||
-            bool("useEditorColorScheme") != settings.useEditorColorScheme ||
             bool("useSimplifiedLanguageColors") != settings.useSimplifiedLanguageColors ||
             int("largeFileLineThreshold") != settings.largeFileLineThreshold ||
             int("hugeFileLineThreshold") != settings.hugeFileLineThreshold ||
@@ -94,11 +86,7 @@ class CodeLensProConfigurable : Configurable {
         settings.autoWidth = bool("autoWidth")
         settings.hideOriginalScrollbar = bool("hideOriginalScrollbar")
         settings.width = int("width")
-        settings.showViewport = bool("showViewport")
-        settings.showCaretLine = bool("showCaretLine")
         settings.showErrorsAndWarnings = bool("showErrorsAndWarnings")
-        settings.showMarkupHighlights = bool("showMarkupHighlights")
-        settings.useEditorColorScheme = bool("useEditorColorScheme")
         settings.useSimplifiedLanguageColors = bool("useSimplifiedLanguageColors")
         settings.largeFileLineThreshold = int("largeFileLineThreshold")
         settings.hugeFileLineThreshold = int("hugeFileLineThreshold")
@@ -111,11 +99,7 @@ class CodeLensProConfigurable : Configurable {
         checkBoxes["autoWidth"]?.isSelected = settings.autoWidth
         checkBoxes["hideOriginalScrollbar"]?.isSelected = settings.hideOriginalScrollbar
         spinners["width"]?.value = settings.width
-        checkBoxes["showViewport"]?.isSelected = settings.showViewport
-        checkBoxes["showCaretLine"]?.isSelected = settings.showCaretLine
         checkBoxes["showErrorsAndWarnings"]?.isSelected = settings.showErrorsAndWarnings
-        checkBoxes["showMarkupHighlights"]?.isSelected = settings.showMarkupHighlights
-        checkBoxes["useEditorColorScheme"]?.isSelected = settings.useEditorColorScheme
         checkBoxes["useSimplifiedLanguageColors"]?.isSelected = settings.useSimplifiedLanguageColors
         spinners["largeFileLineThreshold"]?.value = settings.largeFileLineThreshold
         spinners["hugeFileLineThreshold"]?.value = settings.hugeFileLineThreshold

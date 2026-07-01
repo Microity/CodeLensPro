@@ -17,7 +17,6 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
         var showViewport: Boolean = true,
         var showCaretLine: Boolean = true,
         var showErrorsAndWarnings: Boolean = true,
-        var showMarkupHighlights: Boolean = true,
         var useEditorColorScheme: Boolean = true,
         var useSimplifiedLanguageColors: Boolean = true,
         var largeFileLineThreshold: Int = DEFAULT_LARGE_FILE_LINE_THRESHOLD,
@@ -68,10 +67,6 @@ class CodeLensProSettings : PersistentStateComponent<CodeLensProSettings.State> 
     var showErrorsAndWarnings: Boolean
         get() = state.showErrorsAndWarnings
         set(value) { state.showErrorsAndWarnings = value }
-
-    var showMarkupHighlights: Boolean
-        get() = state.showMarkupHighlights
-        set(value) { state.showMarkupHighlights = value }
 
     var useEditorColorScheme: Boolean
         get() = state.useEditorColorScheme
