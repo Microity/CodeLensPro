@@ -36,3 +36,6 @@ Thumbs.db
 
 # Local build configuration
 local.properties
+
+### Local AI project context ###
+/.ai/project.local.toml

@@ -1,0 +1,20 @@
+# 复制为 project.local.toml 后，填写当前机器上的工具路径和真实连接信息。
+# project.local.toml 会被 Git 忽略，但仍不得把内容粘贴到聊天、日志或正式文档中。
+# project.toml 负责公开声明资源用途和只读边界；这里的稳定资源 ID 必须与其保持一致。
+# 开发资源可以启用只读自动授权；生产资源默认禁用，访问时仍需当前任务明确授权。
+
+schema_version = 1
+contains_plaintext_secrets = true
+
+[tools]
+git_home = ""
+node_home = ""
+python_home = ""
+jdk21_home = ""
+jdk25_home = ""
+maven_home = ""
+gradle_home = ""
+
+
+
+
