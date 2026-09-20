@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Fixed an "Editor is already disposed" error caused by delayed minimap updates after closing an editor.
+
 ## 1.0.6
 
 - Fixed mouse wheel scrolling when the original editor scrollbar is hidden.

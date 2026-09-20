@@ -50,6 +50,10 @@ class CodeLensProPanel(
     private var minimapImageWidth = -1
     private var minimapImageHeight = -1
     private var rebuildTimer: Timer? = null
+    @Volatile
+    private var disposed = false
+    private val isActive: Boolean
+        get() = !disposed && !editor.isDisposed
     private val diagnosticsScheduler = DiagnosticsRefreshScheduler()
     private var diagnosticsRefreshTimer: Timer? = null
     private var daemonConnection: MessageBusConnection? = null
@@ -63,12 +67,14 @@ class CodeLensProPanel(
     private var currentResizeWidth = width
     private val documentListener = object : DocumentListener {
         override fun documentChanged(event: DocumentEvent) {
+            if (!isActive) return
             if (event.document !== editor.document) return
             scheduleRebuild()
         }
     }
     private val caretListener = object : CaretListener {
         override fun caretPositionChanged(event: CaretEvent) {
+            if (!isActive) return
             snapshot = snapshot.copy(caretLine = editor.caretModel.logicalPosition.line)
             repaintThrottled()
         }
@@ -114,6 +120,7 @@ class CodeLensProPanel(
 
         val mouseHandler = object : MouseAdapter() {
             override fun mousePressed(event: MouseEvent) {
+                if (!isActive) return
                 if (event.isPopupTrigger || event.button == MouseEvent.BUTTON3) {
                     popupMenu.show(event)
                     return
@@ -131,6 +138,7 @@ class CodeLensProPanel(
             }
 
             override fun mouseReleased(event: MouseEvent) {
+                if (!isActive) return
                 if (resizing) {
                     resizing = false
                     settings.width = currentResizeWidth.coerceIn(CodeLensProSettings.MIN_WIDTH, CodeLensProSettings.MAX_WIDTH)
@@ -144,6 +152,7 @@ class CodeLensProPanel(
             }
 
             override fun mouseDragged(event: MouseEvent) {
+                if (!isActive) return
                 if (resizing) {
                     resizeTo(event.xOnScreen)
                     return
@@ -152,6 +161,7 @@ class CodeLensProPanel(
             }
 
             override fun mouseWheelMoved(event: MouseWheelEvent) {
+                if (!isActive) return
                 scrollByWheel(event)
             }
 
@@ -179,6 +189,7 @@ class CodeLensProPanel(
 
     override fun paintComponent(graphics: Graphics) {
         super.paintComponent(graphics)
+        if (!isActive) return
         val layout = currentLayout()
         ensureMinimapImage(layout)
         val g = graphics as Graphics2D
@@ -278,8 +289,12 @@ class CodeLensProPanel(
     }
 
     override fun dispose() {
+        if (disposed) return
+        disposed = true
         rebuildTimer?.stop()
+        rebuildTimer = null
         diagnosticsRefreshTimer?.stop()
+        diagnosticsRefreshTimer = null
         diagnosticsScheduler.dispose()
         daemonConnection?.disconnect()
         daemonConnection = null
@@ -306,6 +321,7 @@ class CodeLensProPanel(
         daemonConnection = project.messageBus.connect(this)
         daemonConnection?.subscribe(DaemonCodeAnalyzer.DAEMON_EVENT_TOPIC, object : DaemonCodeAnalyzer.DaemonListener {
             override fun daemonFinished(fileEditors: Collection<FileEditor>) {
+                if (!isActive) return
                 if (fileEditors.isEmpty() || fileEditors.any { fileEditorMatchesCurrentDocument(it) }) {
                     scheduleDiagnosticsRefresh()
                 }
@@ -319,10 +335,13 @@ class CodeLensProPanel(
     }
 
     private fun scheduleDiagnosticsRefresh() {
+        if (!isActive) return
         ApplicationManager.getApplication().invokeLater {
+            if (!isActive) return@invokeLater
             if (!diagnosticsScheduler.markupChanged()) return@invokeLater
             diagnosticsRefreshTimer?.stop()
             diagnosticsRefreshTimer = Timer(DIAGNOSTICS_REFRESH_DEBOUNCE_MS) {
+                if (!isActive) return@Timer
                 diagnosticsScheduler.refreshStarted()
                 refreshHighlightsAndRepaint()
             }.apply {
@@ -333,6 +352,7 @@ class CodeLensProPanel(
     }
 
     private fun refreshHighlightsAndRepaint() {
+        if (!isActive) return
         val colors = ColorSchemeAdapter(editor, settings)
         val highlights = diagnosticCollector.collect(editor, settings, colors)
         if (snapshot.highlights != highlights) {
@@ -342,6 +362,7 @@ class CodeLensProPanel(
     }
 
     fun rebuildAndRepaint() {
+        if (!isActive) return
         val currentFoldingStamp = snapshotBuilder.foldingStamp(editor)
         if (snapshot.documentStamp == editor.document.modificationStamp && snapshot.foldingStamp == currentFoldingStamp) {
             refreshHighlightsAndRepaint()
@@ -353,12 +374,19 @@ class CodeLensProPanel(
     }
 
     private fun forceRebuildAndRepaint() {
+        if (!isActive) return
         snapshot = snapshotBuilder.build(editor, settings)
         clearMinimapImage()
         repaint()
     }
 
     private fun scheduleRebuild() {
+        if (!isActive) return
+        val application = ApplicationManager.getApplication()
+        if (!application.isDispatchThread) {
+            application.invokeLater { scheduleRebuild() }
+            return
+        }
         rebuildTimer?.stop()
         rebuildTimer = Timer(REBUILD_DEBOUNCE_MS) {
             forceRebuildAndRepaint()
@@ -369,6 +397,7 @@ class CodeLensProPanel(
     }
 
     private fun repaintThrottled() {
+        if (!isActive) return
         val now = System.nanoTime()
         if (now - lastRepaintNanos < REPAINT_THROTTLE_NANOS) return
         lastRepaintNanos = now

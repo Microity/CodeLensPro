@@ -35,6 +35,11 @@ intellijPlatform {
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
         changeNotes = """
+            <h3>1.0.7</h3>
+            <ul>
+                <li>Fixed an "Editor is already disposed" error caused by delayed minimap updates after closing an editor.</li>
+            </ul>
+
             <h3>1.0.6</h3>
             <ul>
                 <li>Fixed mouse wheel scrolling when the original editor scrollbar is hidden.</li>

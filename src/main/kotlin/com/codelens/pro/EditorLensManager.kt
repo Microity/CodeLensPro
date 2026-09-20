@@ -40,6 +40,7 @@ class EditorLensManager private constructor() {
     }
 
     fun attach(editor: EditorEx) {
+        if (editor.isDisposed) return
         val settings = CodeLensProSettings.getInstance()
         if (!settings.enabled) return
         if (panels.containsKey(editor)) return
@@ -65,8 +66,8 @@ class EditorLensManager private constructor() {
     }
 
     fun detach(editor: EditorEx) {
-        restoreScrollbar(editor)
         disposables.remove(editor)?.let { Disposer.dispose(it) }
+        restoreScrollbar(editor)
         val wrapper = panels.remove(editor)
         val parent = editor.component
         if (wrapper != null) {
